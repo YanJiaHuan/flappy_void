@@ -1,0 +1,109 @@
+:root {
+  --bg: #f5f5f5;
+  --ink: #141414;
+  --panel: rgba(255, 255, 255, 0.9);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  font-family: "Trebuchet MS", "Gill Sans", Arial, sans-serif;
+}
+
+#app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#game {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+}
+
+#hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  pointer-events: none;
+}
+
+#score {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.08);
+}
+
+#btn-exit {
+  pointer-events: auto;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+#overlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(245, 245, 245, 0.7);
+  backdrop-filter: blur(6px);
+  text-align: center;
+  padding: 24px;
+}
+
+#overlay.show {
+  display: flex;
+}
+
+.panel {
+  background: var(--panel);
+  border-radius: 20px;
+  padding: 24px 28px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+  max-width: 320px;
+}
+
+.panel h1 {
+  margin: 0 0 10px;
+  font-size: 28px;
+}
+
+.panel p {
+  margin: 0 0 16px;
+  font-size: 15px;
+  color: #333;
+}
+
+#btn-start {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  background: #1c1c1c;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+}

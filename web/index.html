@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>Flappy Void</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="game"></canvas>
+      <div id="hud">
+        <div id="score">0</div>
+        <button id="btn-exit" aria-label="Exit">Exit</button>
+      </div>
+      <div id="overlay" class="show">
+        <div class="panel">
+          <h1>Flappy Void</h1>
+          <p>Tap to flap. Tap again to restart.</p>
+          <button id="btn-start">Start</button>
+        </div>
+      </div>
+    </div>
+    <script src="game.js"></script>
+  </body>
+</html>
