@@ -13,6 +13,7 @@ BALL_COLOR = (220, 40, 40)
 PIPE_COLOR = (20, 20, 20)
 TEXT_COLOR = (20, 20, 20)
 
+BG_IMG_PATH = "map.jpg"
 BALL_IMG_PATH = "zm.jpg"
 PIPE_TILE_PATH = "sld.jpg"
 
@@ -75,6 +76,19 @@ def blit_tiled(surface, tile, rect):
                 surface.blit(tile, (x, y), area=pygame.Rect(0, 0, w, h))
 
 
+def build_cover_background(img, target_w, target_h):
+    img_w, img_h = img.get_size()
+    if img_w == 0 or img_h == 0:
+        return None, (0, 0)
+    scale = max(target_w / img_w, target_h / img_h)
+    scaled_w = int(img_w * scale)
+    scaled_h = int(img_h * scale)
+    scaled = pygame.transform.smoothscale(img, (scaled_w, scaled_h))
+    x = (target_w - scaled_w) // 2
+    y = (target_h - scaled_h) // 2
+    return scaled, (x, y)
+
+
 def reset_state():
     ball_y = HEIGHT // 2
     ball_vy = 0.0
@@ -92,6 +106,14 @@ def main():
     clock = pygame.time.Clock()
     font = pygame.font.SysFont("Arial", 32, bold=True)
     small_font = pygame.font.SysFont("Arial", 18)
+
+    bg_surface = None
+    bg_pos = (0, 0)
+    try:
+        bg_img = pygame.image.load(BG_IMG_PATH).convert()
+        bg_surface, bg_pos = build_cover_background(bg_img, WIDTH, HEIGHT)
+    except pygame.error:
+        bg_surface = None
 
     try:
         ball_img = pygame.image.load(BALL_IMG_PATH).convert_alpha()
@@ -152,7 +174,10 @@ def main():
             if ball_y - BALL_RADIUS <= 0 or ball_y + BALL_RADIUS >= HEIGHT:
                 alive = False
 
-        screen.fill(BG_COLOR)
+        if bg_surface:
+            screen.blit(bg_surface, bg_pos)
+        else:
+            screen.fill(BG_COLOR)
 
         for pipe in pipes:
             top_rect, bottom_rect = pipe.rects()

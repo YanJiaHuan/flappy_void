@@ -42,6 +42,9 @@
   const pipeTile = new Image();
   pipeTile.src = "sld.jpg";
 
+  const mapImg = new Image();
+  mapImg.src = "map.jpg";
+
   function resize() {
     const ratio = window.devicePixelRatio || 1;
     const w = window.innerWidth;
@@ -168,9 +171,25 @@
     const scale = getScale();
     const offsetX = (window.innerWidth - world.width * scale) / 2;
     const offsetY = (window.innerHeight - world.height * scale) / 2;
+    const worldW = world.width * scale;
+    const worldH = world.height * scale;
 
     ctx.save();
     ctx.translate(offsetX, offsetY);
+
+    if (mapImg.complete && mapImg.naturalWidth && mapImg.naturalHeight) {
+      const imgW = mapImg.naturalWidth;
+      const imgH = mapImg.naturalHeight;
+      const coverScale = Math.max(worldW / imgW, worldH / imgH);
+      const drawW = imgW * coverScale;
+      const drawH = imgH * coverScale;
+      const drawX = (worldW - drawW) / 2;
+      const drawY = (worldH - drawH) / 2;
+      ctx.drawImage(mapImg, drawX, drawY, drawW, drawH);
+    } else {
+      ctx.fillStyle = "#f5f5f5";
+      ctx.fillRect(0, 0, worldW, worldH);
+    }
 
     pipes.forEach((pipe) => {
       const topRect = { x: pipe.x, y: 0, w: world.pipeTileW, h: pipe.gapY - world.pipeGap / 2 };
@@ -244,15 +263,16 @@
     requestAnimationFrame(loop);
   }
 
-  if (ballImg.complete && pipeTile.complete) {
+  if (ballImg.complete && pipeTile.complete && mapImg.complete) {
     boot();
   } else {
     let loaded = 0;
     const done = () => {
       loaded += 1;
-      if (loaded >= 2) boot();
+      if (loaded >= 3) boot();
     };
     ballImg.onload = done;
     pipeTile.onload = done;
+    mapImg.onload = done;
   }
 })();
