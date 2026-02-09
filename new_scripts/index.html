@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Flappy Void</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#5b13ec",
+                        "void-teal": "#00ffd4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#161022",
+                        "void-gold": "#ffd700",
+                        "void-silver": "#c0c0c0",
+                        "void-bronze": "#cd7f32",
+                        "void-stone": "#221933",
+                        "void-accent": "#a492c9",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "Noto Sans SC", "sans-serif"]
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer components {
+            .stone-texture {
+                background-color: #2f2348;
+                background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCkq-Jd5DbLPVdBeRuI5vbm_AYFe9fMOMjU-jBKdHkqUw2Ey2q0NenNDffDrxcNxz0n6FKi6gOxrFJNw-RIkFX13q8og9FdMT5n_twDUyWwcnhcnfHl_grm2Emxu5dFQ9p3YgA41CEe7YjCWwrTHTyrltHKHFly3cxXtc2XEgiZXPdXCT4wcKoQASeq3yYZpb4yodJQjUHVqcQEGwmHRUutG6zoTHwSBwaOz36Z9DGUGVbOiv-j-YLgmoGpFv6EQqHho17pPDYc8EYI);
+                box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.1), 0 4px 15px rgba(0, 0, 0, 0.5);
+                border: 1px solid rgba(91, 19, 236, 0.4);
+            }
+            .glowing-text {
+                text-shadow: 0 0 10px rgba(91, 19, 236, 0.8), 0 0 20px rgba(0, 255, 212, 0.4);
+            }
+            .chrono-pillar {
+                background: linear-gradient(180deg, #161022 0%, #5b13ec 50%, #161022 100%);
+                box-shadow: 0 0 20px rgba(91, 19, 236, 0.4);
+            }
+            .void-trail {
+                background: linear-gradient(90deg, rgba(91, 19, 236, 0.6) 0%, transparent 100%);
+            }
+            .nebula-bg {
+                background: radial-gradient(circle at 50% 50%, #1a0b35 0%, #0a0216 100%);
+            }
+            .glass-panel {
+                background: rgba(34, 25, 51, 0.6);
+                backdrop-filter: blur(12px);
+                border: 1px solid rgba(91, 19, 236, 0.2);
+            }
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #161022;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #root {
+            height: 100vh;
+            width: 100vw;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-background-dark font-display text-white overflow-hidden select-none">
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Flappy Void</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@200..700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Rajdhani:wght@400;600;700&display=swap" />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#6f2cff",
+              "void-teal": "#2cf7d4",
+              "background-dark": "#0b0714",
+              "void-stone": "#1a1326",
+              "void-accent": "#b7a4d8",
+              "void-gold": "#f5c04d",
+              "void-silver": "#c5ceda",
+              "void-bronze": "#d08b5b"
+            },
+            fontFamily: {
+              display: ["Cinzel", "serif"],
+              body: ["Rajdhani", "sans-serif"]
+            },
+            animation: {
+              "pulse-slow": "pulse 3.5s ease-in-out infinite",
+              "float-slow": "float 7s ease-in-out infinite"
+            },
+            keyframes: {
+              float: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-8px)" }
+              }
+            }
+          }
+        }
+      };
+    </script>
+    <style type="text/tailwindcss">
+      @layer components {
+        .glass-panel {
+          @apply bg-white/5 border border-white/10 backdrop-blur-xl;
+        }
+        .glow-text {
+          text-shadow: 0 0 12px rgba(111, 44, 255, 0.6), 0 0 30px rgba(44, 247, 212, 0.4);
+        }
+        .stone-panel {
+          background: linear-gradient(140deg, rgba(31, 20, 49, 0.95), rgba(12, 7, 21, 0.95));
+          border: 1px solid rgba(111, 44, 255, 0.4);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), inset 0 0 18px rgba(111, 44, 255, 0.2);
+        }
+        .btn-primary {
+          @apply bg-primary/90 text-white font-semibold tracking-[0.2em] uppercase rounded-xl px-6 py-4 transition-all active:scale-95;
+          box-shadow: 0 15px 35px rgba(111, 44, 255, 0.35);
+        }
+        .btn-outline {
+          @apply border border-white/15 bg-white/5 rounded-xl px-6 py-3 text-white/80 font-semibold tracking-wide transition-all hover:text-white;
+        }
+        .input-field {
+          @apply w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/40 focus:border-primary/60 focus:ring-2 focus:ring-primary/20;
+        }
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: #0b0714;
+        -webkit-tap-highlight-color: transparent;
+      }
+      #root {
+        height: 100vh;
+        width: 100vw;
+      }
+    </style>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body class="bg-background-dark font-body text-white overflow-hidden">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
