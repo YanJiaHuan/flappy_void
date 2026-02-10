@@ -44,17 +44,23 @@ const AuthScreen: React.FC = () => {
     setLoading(true);
 
     try {
+      if (!password || password.length < 8) {
+        setMessage('密码至少 8 位。');
+        return;
+      }
       if (!isValidEmail(email)) {
         setMessage('邮箱格式不正确，请输入有效邮箱。');
         return;
       }
 
       if (mode === 'login') {
+        setMessage('正在登录...');
         const { error } = await withTimeout(
           supabase.auth.signInWithPassword({ email: email.trim(), password }),
           '登录'
         );
         if (error) throw error;
+        setMessage(null);
       } else {
         if (!isValidUsername(username)) {
           setMessage('昵称需为 2-18 位中文/字母/数字/下划线。');
@@ -72,6 +78,7 @@ const AuthScreen: React.FC = () => {
           setMessage('该昵称已被使用，请更换。');
           return;
         }
+        setMessage('正在注册...');
         const { data, error } = await withTimeout(
           supabase.auth.signUp({
             email: email.trim(),
@@ -158,7 +165,7 @@ const AuthScreen: React.FC = () => {
             </button>
           </div>
 
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          <form className="space-y-4" onSubmit={handleSubmit} noValidate>
             {mode === 'signup' && (
               <div>
                 <label className="text-xs uppercase tracking-[0.3em] text-white/50">昵称</label>
