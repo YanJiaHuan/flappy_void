@@ -1,5 +1,6 @@
 # Click The Link To Play
-› https://yanjiahuan.github.io/flappy_void/
+› https://flappy-void.vercel.app/ (complete game)
+› https://yanjiahuan.github.io/flappy_void/ (legacy build)
 
 # What It Is
 You’ve definitely played Flappy Bird before, right?
@@ -21,5 +22,5 @@ Dodging an aggressive Slardar, trying desperately to survive for 3 minutes！
   </tr>
 </table>
 
-# Codex Usage:
-This repo is built by codex.
+# Codex Usage
+This repo is built by Codex.
