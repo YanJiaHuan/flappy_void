@@ -39,7 +39,11 @@ export async function upsertProfile(profile: Profile) {
   }
 }
 
-export async function recordScore(userId: string, score: number) {
+export async function recordScore(
+  userId: string,
+  score: number,
+  profile?: Pick<Profile, 'username' | 'avatar_url' | 'best_score'>
+) {
   const { error: scoreError } = await supabase
     .from('scores')
     .insert({ user_id: userId, score });
@@ -48,18 +52,37 @@ export async function recordScore(userId: string, score: number) {
     throw scoreError;
   }
 
-  const { data: profile, error: profileError } = await supabase
+  const { data: existingProfile, error: profileError } = await supabase
     .from('profiles')
     .select('best_score')
     .eq('id', userId)
-    .single();
+    .maybeSingle();
 
   if (profileError) {
     throw profileError;
   }
 
-  const nextBest = Math.max(profile.best_score ?? 0, score);
-  if (nextBest !== profile.best_score) {
+  if (!existingProfile) {
+    if (!profile?.username) {
+      throw new Error('用户资料缺失，请重新登录后再试。');
+    }
+    const nextBest = Math.max(profile.best_score ?? 0, score);
+    const { error: upsertError } = await supabase
+      .from('profiles')
+      .upsert({
+        id: userId,
+        username: profile.username,
+        avatar_url: profile.avatar_url ?? null,
+        best_score: nextBest
+      });
+    if (upsertError) {
+      throw upsertError;
+    }
+    return nextBest;
+  }
+
+  const nextBest = Math.max(existingProfile.best_score ?? 0, score);
+  if (nextBest !== existingProfile.best_score) {
     const { error: updateError } = await supabase
       .from('profiles')
       .update({ best_score: nextBest })

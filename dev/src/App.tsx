@@ -99,10 +99,16 @@ const App: React.FC = () => {
     if (!session?.user || !profile) return;
 
     try {
-      const nextBest = await recordScore(session.user.id, score);
+      const nextBest = await recordScore(session.user.id, score, profile);
       setProfile({ ...profile, best_score: nextBest });
-      const userRank = await fetchUserRank(session.user.id);
-      setRank(userRank);
+      try {
+        const userRank = await fetchUserRank(session.user.id);
+        setRank(userRank);
+      } catch (rankError) {
+        const message =
+          rankError instanceof Error ? rankError.message : '排名获取失败。';
+        setStatus(`成绩已同步，但${message}`);
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : '同步成绩失败。';
       setStatus(message);
