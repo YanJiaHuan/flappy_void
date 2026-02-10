@@ -17,3 +17,7 @@ Update:
 
 Testing:
 - npm install in /dev hung with no output; aborted. Playwright test loop not run due to missing deps.
+
+Update:
+- Added timeout handling and stricter validation in AuthScreen to surface network/auth issues quickly.
+- Added container pointer handler + touch-action none for mobile taps (previous update).

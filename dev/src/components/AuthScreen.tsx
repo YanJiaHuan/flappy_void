@@ -26,6 +26,18 @@ const AuthScreen: React.FC = () => {
     return /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/.test(trimmed);
   };
 
+  const withTimeout = async <T,>(promise: Promise<T>, label: string, ms = 8000) => {
+    let timer: number | undefined;
+    const timeout = new Promise<never>((_, reject) => {
+      timer = window.setTimeout(() => reject(new Error(`${label}超时，请检查网络或服务是否可访问。`)), ms);
+    });
+    try {
+      return await Promise.race([promise, timeout]);
+    } finally {
+      if (timer) window.clearTimeout(timer);
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setMessage(null);
@@ -38,29 +50,38 @@ const AuthScreen: React.FC = () => {
       }
 
       if (mode === 'login') {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await withTimeout(
+          supabase.auth.signInWithPassword({ email: email.trim(), password }),
+          '登录'
+        );
         if (error) throw error;
       } else {
         if (!isValidUsername(username)) {
           setMessage('昵称需为 2-18 位中文/字母/数字/下划线。');
           return;
         }
-        const { data: existingUser } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('username', username.trim())
-          .maybeSingle();
+        const { data: existingUser } = await withTimeout(
+          supabase
+            .from('profiles')
+            .select('id')
+            .eq('username', username.trim())
+            .maybeSingle(),
+          '检查昵称'
+        );
         if (existingUser) {
           setMessage('该昵称已被使用，请更换。');
           return;
         }
-        const { data, error } = await supabase.auth.signUp({
-          email: email.trim(),
-          password,
-          options: {
-            data: { username: username.trim() }
-          }
-        });
+        const { data, error } = await withTimeout(
+          supabase.auth.signUp({
+            email: email.trim(),
+            password,
+            options: {
+              data: { username: username.trim() }
+            }
+          }),
+          '注册'
+        );
         if (error) throw error;
         if (data.user && data.session) {
           await upsertProfile({
@@ -71,10 +92,13 @@ const AuthScreen: React.FC = () => {
           });
           setMessage('注册成功，正在进入游戏...');
         } else {
-          const { error: signInError } = await supabase.auth.signInWithPassword({
-            email: email.trim(),
-            password
-          });
+          const { error: signInError } = await withTimeout(
+            supabase.auth.signInWithPassword({
+              email: email.trim(),
+              password
+            }),
+            '登录'
+          );
           if (signInError) {
             setMode('login');
             setMessage('注册成功，请直接登录。若提示需要验证邮箱，请在 Supabase 关闭邮件确认。');
