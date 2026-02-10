@@ -218,6 +218,12 @@ const GameScreen: React.FC<GameScreenProps> = ({ onGameOver, onExit }) => {
     };
   }, []);
 
+  const handleContainerPointer = (event: React.PointerEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement;
+    if (target.closest('button')) return;
+    engineRef.current.jump();
+  };
+
   useEffect(() => {
     window.advanceTime = (ms: number) => {
       const engine = engineRef.current;
@@ -271,6 +277,7 @@ const GameScreen: React.FC<GameScreenProps> = ({ onGameOver, onExit }) => {
     <div
       ref={containerRef}
       className="relative h-full w-full flex items-center justify-center bg-background-dark overflow-hidden"
+      onPointerDown={handleContainerPointer}
     >
       <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-20">
         <button

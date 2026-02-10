@@ -12,38 +12,84 @@ const AuthScreen: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
+  const isValidEmail = (value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed || trimmed.length > 100) return false;
+    if (/\s/.test(trimmed)) return false;
+    const basic = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    return basic.test(trimmed);
+  };
+
+  const isValidUsername = (value: string) => {
+    const trimmed = value.trim();
+    if (trimmed.length < 2 || trimmed.length > 18) return false;
+    return /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/.test(trimmed);
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setMessage(null);
     setLoading(true);
 
     try {
+      if (!isValidEmail(email)) {
+        setMessage('邮箱格式不正确，请输入有效邮箱。');
+        return;
+      }
+
       if (mode === 'login') {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       } else {
+        if (!isValidUsername(username)) {
+          setMessage('昵称需为 2-18 位中文/字母/数字/下划线。');
+          return;
+        }
+        const { data: existingUser } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('username', username.trim())
+          .maybeSingle();
+        if (existingUser) {
+          setMessage('该昵称已被使用，请更换。');
+          return;
+        }
         const { data, error } = await supabase.auth.signUp({
-          email,
+          email: email.trim(),
           password,
           options: {
-            data: { username }
+            data: { username: username.trim() }
           }
         });
         if (error) throw error;
         if (data.user && data.session) {
           await upsertProfile({
             id: data.user.id,
-            username,
+            username: username.trim(),
             best_score: 0,
             avatar_url: null
           });
+          setMessage('注册成功，正在进入游戏...');
         } else {
-          setMessage('注册成功，请前往邮箱完成验证后登录。');
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+            email: email.trim(),
+            password
+          });
+          if (signInError) {
+            setMode('login');
+            setMessage('注册成功，请直接登录。若提示需要验证邮箱，请在 Supabase 关闭邮件确认。');
+          }
         }
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : '认证失败，请重试。';
-      setMessage(message);
+      const raw = err instanceof Error ? err.message : '认证失败，请重试。';
+      if (raw.toLowerCase().includes('duplicate') || raw.toLowerCase().includes('already registered')) {
+        setMessage('该邮箱或昵称已被使用。');
+      } else if (raw.toLowerCase().includes('confirm') || raw.toLowerCase().includes('verified')) {
+        setMessage('该账号需要邮箱验证。请在 Supabase 关闭邮件确认后再试。');
+      } else {
+        setMessage(raw);
+      }
     } finally {
       setLoading(false);
     }
@@ -97,6 +143,9 @@ const AuthScreen: React.FC = () => {
                   placeholder="虚空行者"
                   value={username}
                   onChange={(event) => setUsername(event.target.value)}
+                  minLength={2}
+                  maxLength={18}
+                  pattern="[a-zA-Z0-9_\\u4e00-\\u9fa5]+"
                   required
                 />
               </div>
@@ -109,6 +158,8 @@ const AuthScreen: React.FC = () => {
                 placeholder="void@astral.com"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
+                maxLength={100}
+                pattern="[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}"
                 required
               />
             </div>

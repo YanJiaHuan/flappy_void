@@ -6,11 +6,19 @@
   box-sizing: border-box;
 }
 
+body, #root {
+  touch-action: none;
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 .game-canvas {
   image-rendering: auto;
   background: transparent;
   display: block;
   transform-origin: center;
+  touch-action: none;
 }
 
 .leaderboard-scroll::-webkit-scrollbar {

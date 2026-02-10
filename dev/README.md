@@ -17,7 +17,7 @@ Open `http://localhost:5173`.
 1. Create a Supabase project.
 2. In the SQL editor, run `supabase/schema.sql`.
 3. Enable Email/Password auth in **Authentication → Providers**.
-4. (Optional) Disable email confirmation for quick testing.
+4. Disable email confirmation (recommended for this game) so users can sign up and play immediately.
 5. Get keys from **Project Settings → API**.
 
 Create `.env.local` in `/dev`:
